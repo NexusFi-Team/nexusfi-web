@@ -1,13 +1,13 @@
 'use client';
 
+import { useAuthLogin } from '../model/useAuthLogin';
+
 export function KakaoLoginButton() {
-  const handleLogin = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/oauth2/authorization/kakao`;
-  };
+  const { kakaoLogin } = useAuthLogin();
 
   return (
     <button
-      onClick={handleLogin}
+      onClick={kakaoLogin}
       className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#FEE500] px-4 text-[#191919] font-medium transition-colors hover:bg-[#FDD800]"
     >
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">

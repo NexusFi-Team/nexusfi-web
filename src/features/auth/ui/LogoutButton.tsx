@@ -1,8 +1,15 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/entities/auth';
+
 export function LogoutButton() {
+  const router = useRouter();
+  const logout = useAuthStore((state) => state.logout);
+
   const handleLogout = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/logout`;
+    logout();
+    router.replace('/login');
   };
 
   return (
