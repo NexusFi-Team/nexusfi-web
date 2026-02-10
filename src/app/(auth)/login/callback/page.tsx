@@ -2,15 +2,23 @@
 
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuthStore } from '@/entities/auth';
 
-export default function AuthCallbackPage() {
+export default function LoginCallbackPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const setToken = useAuthStore((state) => state.setToken);
 
   useEffect(() => {
-    const redirectUrl = searchParams.get('redirect_url') || '/';
-    router.replace(redirectUrl);
-  }, [searchParams, router]);
+    const token = searchParams.get('token');
+
+    if (token) {
+      setToken(token);
+      router.replace('/');
+    } else {
+      router.replace('/login');
+    }
+  }, [searchParams, router, setToken]);
 
   return (
     <div className="flex min-h-[50vh] items-center justify-center">
