@@ -1,3 +1,5 @@
+import { useAuthStore } from '@/entities/auth';
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
 
 export class ApiError extends Error {
@@ -6,17 +8,20 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(
-  endpoint: string,
-  options?: RequestInit
-): Promise<T> {
+async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const token = useAuthStore.getState().token;
+
   const res = await fetch(`${BASE_URL}${endpoint}`, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
     ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...options?.headers,
+    },
   });
 
   if (res.status === 401) {
+    useAuthStore.getState().logout();
     if (typeof window !== 'undefined') window.location.href = '/login';
     throw new ApiError(401);
   }
@@ -39,6 +44,5 @@ export const api = {
   patch: <T>(endpoint: string, body?: unknown) =>
     request<T>(endpoint, { method: 'PATCH', body: JSON.stringify(body) }),
 
-  delete: <T>(endpoint: string) =>
-    request<T>(endpoint, { method: 'DELETE' }),
+  delete: <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' }),
 };
