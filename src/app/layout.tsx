@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import QueryProvider from "@/shared/providers/query-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,9 +16,11 @@ export default function RootLayout({
   return (
     <html lang='ko'>
       <body>
-        <Suspense>
-          <div className='flex min-h-screen flex-col'>{children}</div>
-        </Suspense>
+        <QueryProvider>
+          <Suspense>
+            <div className='flex min-h-screen flex-col'>{children}</div>
+          </Suspense>
+        </QueryProvider>
       </body>
     </html>
   );
