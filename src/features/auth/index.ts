@@ -1,3 +1,4 @@
-export { KakaoLoginButton } from './ui/KakaoLoginButton';
-export { LogoutButton } from './ui/LogoutButton';
-export { useAuthLogin } from './model/useAuthLogin';
+export { KakaoLoginBtn } from "./ui/KakaoLoginBtn";
+export { GoogleLoginBtn } from "./ui/GoogleLoginBtn";
+export { LogoutBtn } from "./ui/LogoutBtn";
+export { useAuth } from "./model/useAuth";
