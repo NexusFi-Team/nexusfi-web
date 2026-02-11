@@ -3,17 +3,17 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/entities/auth";
+import { FullPageLoader } from "@/widgets";
 
 const PUBLIC_PATHS = ["/login"];
 
-export function AuthProvider({
-  children
-}: {
-  children: React.ReactNode;
-}) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, isLoading, init } = useAuthStore();
+
+  const isPublicPath = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
+  const isLoginPage = pathname === "/login" && !pathname.includes("/callback");
 
   useEffect(() => {
     init();
@@ -22,27 +22,17 @@ export function AuthProvider({
   useEffect(() => {
     if (isLoading) return;
 
-    const isPublicPath = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
-
     if (!isAuthenticated && !isPublicPath) {
       router.replace("/login");
     }
 
-    if (
-      isAuthenticated &&
-      pathname === "/login" &&
-      !pathname.includes("/callback")
-    ) {
+    if (isAuthenticated && isLoginPage) {
       router.replace("/");
     }
-  }, [isAuthenticated, isLoading, pathname, router]);
+  }, [isAuthenticated, isLoading, isPublicPath, isLoginPage, router]);
 
-  if (isLoading) {
-    return (
-      <div className='flex min-h-screen items-center justify-center'>
-        <div className='h-8 w-8 animate-spin rounded-full border-4 border-zinc-300 border-t-zinc-900' />
-      </div>
-    );
+  if (isLoading || (!isAuthenticated && !isPublicPath)) {
+    return <FullPageLoader />;
   }
 
   return <>{children}</>;

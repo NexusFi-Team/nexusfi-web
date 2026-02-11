@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { QueryProvider, AuthProvider } from '@/shared/providers';
+import { FullPageLoader } from '@/widgets';
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export default function RootLayout({
     <html lang='ko'>
       <body>
         <QueryProvider>
-          <Suspense>
+          <Suspense fallback={<FullPageLoader />}>
             <AuthProvider>
               <div className='flex min-h-screen flex-col'>{children}</div>
             </AuthProvider>
