@@ -1,9 +1,9 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-type Provider = "kakao" | "google";
+type Social = "kakao" | "google";
 
-const login = (provider: Provider) => {
-  window.location.href = `${API_URL}/oauth2/authorization/${provider}`;
+const login = (social: Social) => {
+  window.location.href = `${API_URL}/oauth2/authorization/${social}`;
 };
 
 export const useAuthLogin = () => ({
