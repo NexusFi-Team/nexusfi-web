@@ -1,4 +1,3 @@
-export { Header } from './header';
-export { Footer } from './footer';
-export { FullPageLoader } from './full-page-loader';
-export { SocialLogin } from './social-login';
+export { Header } from "./header";
+export { Footer } from "./footer";
+export { FullPageLoader } from "./full-page-loader";

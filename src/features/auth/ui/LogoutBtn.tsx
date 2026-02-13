@@ -1,8 +1,9 @@
 "use client";
-import { useAuth } from "../model/useAuth";
+
+import { useAuthActions } from "../model/useAuthActions";
 
 export function LogoutBtn() {
-  const { handleLogout } = useAuth();
+  const { handleLogout } = useAuthActions();
 
   return (
     <button

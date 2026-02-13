@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuth } from "../model/useAuth";
+import { useAuthActions } from "../model/useAuthActions";
 
 export function KakaoLoginBtn() {
-  const { handleKakaoLogin } = useAuth();
+  const { handleKakaoLogin } = useAuthActions();
 
   return (
     <button

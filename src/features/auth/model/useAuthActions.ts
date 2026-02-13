@@ -11,7 +11,7 @@ const redirectToSocialLogin = (social: Social) => {
   window.location.href = `${API_URL}/oauth2/authorization/${social}`;
 };
 
-export const useAuth = () => {
+export const useAuthActions = () => {
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
 
