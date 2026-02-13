@@ -1,5 +1,5 @@
+import { SocialLogin } from "@/features/auth/ui/SocialLogin";
 import Image from "next/image";
-import { SocialLogin } from "@/widgets/social-login";
 
 export default function LoginPage() {
   return (

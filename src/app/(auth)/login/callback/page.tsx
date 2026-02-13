@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/entities/auth";
+import { userApi } from "@/entities/user";
 
 export default function LoginCallbackPage() {
   const router = useRouter();
@@ -10,14 +11,30 @@ export default function LoginCallbackPage() {
   const setToken = useAuthStore((state) => state.setToken);
 
   useEffect(() => {
-    const token = searchParams.get("accessToken");
+    const handleCallback = async () => {
+      const token = searchParams.get("accessToken");
 
-    if (token) {
+      if (!token) {
+        router.replace("/login");
+        return;
+      }
+
       setToken(token);
-      router.replace("/");
-    } else {
-      router.replace("/login");
-    }
+
+      try {
+        const user = await userApi.getUser();
+
+        if (user.isProfileCompleted) {
+          router.replace("/");
+        } else {
+          router.replace("/profile");
+        }
+      } catch {
+        router.replace("/login");
+      }
+    };
+
+    handleCallback();
   }, [searchParams, router, setToken]);
 
   return (
