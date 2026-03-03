@@ -1,5 +1,3 @@
-import { useAuthStore } from "@/entities/auth";
-
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
 export class ApiError extends Error {
@@ -8,21 +6,34 @@ export class ApiError extends Error {
   }
 }
 
+interface ApiConfig {
+  getToken: () => string | null;
+  onUnauthorized: () => void;
+}
+
+let apiConfig: ApiConfig = {
+  getToken: () => null,
+  onUnauthorized: () => {},
+};
+
+export function configureApi(config: Partial<ApiConfig>) {
+  apiConfig = { ...apiConfig, ...config };
+}
+
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const token = useAuthStore.getState().token;
+  const token = apiConfig.getToken();
 
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
       ...(token && { Authorization: `Bearer ${token}` }),
-      ...options?.headers
-    }
+      ...options?.headers,
+    },
   });
 
   if (res.status === 401) {
-    useAuthStore.getState().logout();
-    if (typeof window !== "undefined") window.location.href = "/login";
+    apiConfig.onUnauthorized();
     throw new ApiError(401);
   }
 
@@ -44,5 +55,5 @@ export const api = {
   patch: <T>(endpoint: string, body?: unknown) =>
     request<T>(endpoint, { method: "PATCH", body: JSON.stringify(body) }),
 
-  delete: <T>(endpoint: string) => request<T>(endpoint, { method: "DELETE" })
+  delete: <T>(endpoint: string) => request<T>(endpoint, { method: "DELETE" }),
 };

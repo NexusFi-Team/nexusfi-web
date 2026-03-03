@@ -1,1 +1,1 @@
-export { api, ApiError } from './client';
+export { api, ApiError, configureApi } from './client';
