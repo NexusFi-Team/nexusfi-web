@@ -1,11 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { useAuthStore } from "@/entities/auth";
-import { FullPageLoader } from "@/widgets";
+import { useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useAuthStore } from '@/entities/auth';
+import { FullPageLoader } from '@/widgets';
+import { configureApi } from '@/shared/api';
 
-const PUBLIC_PATHS = ["/login"];
+const PUBLIC_PATHS = ['/login'];
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -13,9 +14,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, init } = useAuthStore();
 
   const isPublicPath = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
-  const isLoginPage = pathname === "/login" && !pathname.includes("/callback");
+  const isLoginPage = pathname === '/login' && !pathname.includes('/callback');
 
   useEffect(() => {
+    configureApi({
+      getToken: () => useAuthStore.getState().token,
+      onUnauthorized: () => {
+        useAuthStore.getState().logout();
+        window.location.href = '/login';
+      },
+    });
     init();
   }, [init]);
 
@@ -23,11 +31,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (isLoading) return;
 
     if (!isAuthenticated && !isPublicPath) {
-      router.replace("/login");
+      router.replace('/login');
     }
 
     if (isAuthenticated && isLoginPage) {
-      router.replace("/");
+      router.replace('/');
     }
   }, [isAuthenticated, isLoading, isPublicPath, isLoginPage, router]);
 
